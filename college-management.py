@@ -74,9 +74,76 @@ def admin_session():
             print("-- TEACHER SUCCESSFULLY REGISTERED --")
             print("*****")
             print("")
+        elif user_option == "3":
+            print("")
+            print("-- DELETE EXISTING STUDENT--")
+            username = input(str("INPUT STUDENT USERNAME : "))
+            query_vals = (username, "STUDENT")
+            command_handler.execute("DELETE FROM users WHERE username = %s AND privilege = %s", query_vals)
+            db.commit()
+            if command_handler.rowcount < 1:
+                print("STUDENT USERNAME NOT FOUND")
+            else:
+                print("STUDENT USERNAME %s HAS BEEN DELETED")
+        elif user_option == "4":
+            print("")
+            print("-- DELETE EXISTING STUDENT--")
+            username = input(str("INPUT TEACHER USERNAME : "))
+            query_vals = (username, "TEACHER")
+            command_handler.execute("DELETE FROM users WHERE username = %s AND privilege = %s", query_vals)
+            db.commit()
+            if command_handler.rowcount < 1:
+                print("TEACHER USERNAME NOT FOUND")
+            else:
+                print("TEACHER USERNAME %s HAS BEEN DELETED")
+        elif user_option == "5":
+            main()
         else:
             print("")
             print("-- INVALID OPTION! --")
+            
+def auth_teacher():
+    print("")
+    print("=== COLLEGE MANAGEMENT SYSTEM FOR TEACHER ===")
+    print("")
+    while 1:
+        username = input(str("USERNAME : "))
+        password = input(str("PASSWORD : "))
+        print("")
+        query_vals = (username, password)
+        command_handler.execute("SELECT * FROM users WHERE username = %s AND password = %s AND privilege = 'TEACHER'", query_vals)
+        if command_handler.rowcount <= 0:
+            print("")
+            print("-- USERNAME NOT FOUND --")
+        else:
+            teacher_session()
+
+def teacher_session():
+    system('cls')
+    print("====================================")
+    print("  WELCOME, YOU SIGNED IN AS TEACHER")
+    print("====================================")
+    print("")
+    print("MENU : ")
+    print("1. MARK STUDENT ATTENDANCE")
+    print("2. VIEW STUDENT ATTENDANCE")
+    print("3. LOGOUT")
+    while 1:
+        print("")
+        user_option = input(str("PLEASE CHOOSE VALID OPTION : "))
+        if user_option == "1":
+            print("")
+            print("-- MARK STUDENT ATTENDANCE --")
+            command_handler.execute("SELECT username FROM users WHERE privilege = 'STUDENT'")
+            records = command_handler.fetchall()
+            for record in records:
+                record = str(record).replace("'", "")
+                record = str(record).replace(",", "")
+                record = str(record).replace("(", "")
+                record = str(record).replace(")", "")
+                print("ABSENT (A) / LATE (L) / PRESENT (P)")
+                status = input(str("INPUT STATUS FOR " + str(record) + " "))
+                query_vals = (str(record), status)
 
 def main():
         print("")
@@ -101,4 +168,4 @@ def main():
 
 main()
 
-#23:21
+#belum selesai
